@@ -132,6 +132,7 @@ When context is getting closed, beans are destroyed in the reverse order.
 The scope of a bean defines the life cycle and visibility of that bean.
 
 The latest version of spring defines 6 types of scopes.
+
 1. Singleton : Single Bean Instance per spring IoC Container. This is the default scope
 2. Prototype : Creates new instance each and every time a bean is requested.
 3. Request
@@ -148,12 +149,58 @@ The last four scopes mentioned are only available in web aware application.
 ## AOP with Spring Framework
 
 ## JDBC Framework
-While working with the database usng JDBC, it is very hard to write unnecessary code to handle exceptions, opening and closing database connections. But Spring JDBC Framework takes care of all the low-level details starting from opening the connection, prepare and execute the SQL statement, process exceptions, handle transactions and finally close the connection.
+JDBC stands for Java Database Connectivity. JDBC is Java API to connect and execute the query with the database. JDBC API uses JDBC drivers to connect with the database. 
 
-So we have to just defie connection parameters and specify the SQL statements.
+![](https://static.javatpoint.com/images/core/jdbc.png)
 
-JDBCTemplate Class : Instances are threadsafe once configured. So we can configure a single instance and inject this shared reference into multiple DAO's.
-It can execute SQL statesments as well as DDL statements.
+**JDBC STEPS**
+
+There are 7  steps to connect any java application with the database using JDBC.
+They are :
+
+* Import the package
+* Load and Register the Driver class
+* Create Connection
+* Create Statement
+* Execute queries
+* Process results
+* Close Connection
+
+
+While working with the database usng JDBC, it is very hard to write unnecessary code to handle exceptions, opening and closing database connections for every operation methods - insert, update delete. It just not efficient, ugly, error prone.
+
+Spring JDBC internally uses JDBC api, but eliminates a lot of problems of JDBC API.
+
+Spring JDBC Framework takes care of all the low-level details starting from opening the connection, prepare and execute the SQL statement, process exceptions, handle transactions and finally close the connection.
+That means with JdbcTemplate, we can save a lot of typing on the redundant codes, because JdbcTemplate will handle it automatically.
+
+So we have to just define connection parameters and specify the SQL statements.
+
+So we can configure a single instance and inject this shared reference into multiple DAO's.
+
+Spring framework provides following approaches:
+
+1. JdbcTemplate
+2. NamedParameter JdbcTemplate
+3. Simple Jdbcemplate
+
+**JdbcTemplate**
+It is the central class in the Spring JDBC support classes. It take care of creation and closing of connection and resources. So it will not be a problem if we forget to close some resource or connection.
+Let's see the methods of spring JdbcTemplate class.
+
+
+* 	**public int update(String query)** is used to insert, update and delete records.
+* 	**public int update(String query,Object... args)** is used to insert, update and delete records using PreparedStatement using given arguments.
+* 	**public void execute(String query**) is used to execute DDL query.
+* 	**public T execute(String sql, PreparedStatementCallback action)** executes the query by using PreparedStatement callback.
+* 	**public T query(String sql, ResultSetExtractor rse)** is used to fetch records using ResultSetExtractor.
+* 	**public List query(String sql, RowMapper rse)** is used to fetch records using RowMapper.
+
+**NamedParameterJdbcTemplate**
+Spring provides another way to insert data by named parameter. In such way we use names instead of "?". So we have to remember column name.
+
+**SimpleJdbcTemplate Example**
+
 
 
 ## Resources
