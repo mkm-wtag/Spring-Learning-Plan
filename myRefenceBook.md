@@ -151,11 +151,9 @@ The last four scopes mentioned are only available in web aware application.
 ## JDBC Framework
 JDBC stands for Java Database Connectivity. JDBC is Java API to connect and execute the query with the database. JDBC API uses JDBC drivers to connect with the database. 
 
-![](https://static.javatpoint.com/images/core/jdbc.png)
-
 **JDBC STEPS**
 
-There are 7  steps to connect any java application with the database using JDBC.
+There are 7 steps to connect any java application with the database using JDBC.
 They are :
 
 * Import the package
@@ -206,18 +204,37 @@ Spring provides another way to insert data by named parameter. In such way we us
 ## Resources
 
 ## Transaction Managements
-Some of the benifits of using Spring Transaction Management are:
-1. Support for declarative Transaction management. In this model, spring uses AOP over the transactional methods to provide data integrity. This is the preferred approach and works in most of the class.
-2. Support for most of the transaction API's such as JDBC, HIbernate, JPA, JDO, JTA, etc. All we need to do is use proper transaction manager implementation class.
-3. Support for programmatic transaction management by using TransactionTemplate or platformTransactionManager implementation.
+
+Transaction is an activity or a group pf activities that are performed as a single unit of work.
+Example : To withdraw 500 from account. The steps are:
+
+1. open_account(A)
+2. old-balance = A.balance
+3. new_balance = old-balance - 500
+4. A.balance = new_balance
+5. close_account(A)
+
+
+**Transaction Properties**
+
+* **Atomicity** means either all successful or none.
+* **Consistency** ensures bringing the database from one consistent state to another consistent state.
+* **Isolation** ensures that transaction is isolated from other transaction.
+* **Durability** means once a transaction has been committed, it will remain so, even in the event of errors, power loss etc.
 
 **Transaction Attributes**
 
 1. Propagation
 2. Isolation
-3. Read Only
-4. Rollback Rules
-5. Timeout 
+3. ReadOnly
+4. RollbackRules
+5. Timeout
+
+**Isolation Level**
+
+ 
+
+ 
 
 
 
