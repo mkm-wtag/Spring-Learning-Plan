@@ -1,7 +1,7 @@
 # Spring and MVC Topics to learn
 
 ## Index
-* [1. Core](#core)
+* [Core](#core)
   * [Architecture of Spring Framework](#architecture-of-spring-framework)
   * [Understand about the necessary environment setup to work with Spring](#understand-about-the-necessary-environment-setup-to-work-with-spring)
   * [Maven Dependency Management](#maven-dependency-management)
@@ -227,10 +227,83 @@ Example : To withdraw 500 from account. The steps are:
 1. Propagation
 2. Isolation
 3. ReadOnly
-4. RollbackRules
+4. Rollback
 5. Timeout
 
-**Isolation Level**
+**Isolation**
+
+Isolation level defines how the changes made to the same data by one transaction affect other simultaneous concurrent transactions and also how and when that changed data becomes available to other transactions.
+
+* **Dirty Read** occur when transaction reads a uncommited data.
+* **non-repeatable read** occurs when a transaction reads the same data multiple times but gets different results each time. It happens when another transaction commited **updates**.
+* **Phantom read** are similar to non-repeatable reads, but when reading from commited **inserts** and **deletes**.
+
+To overcome this problems spring provides some Isolation levels.
+
+**Isolation Levels**
+
+* **ISOLATION_DEFAULT** : Default isolation specific to the data source.
+* **ISOLATION_READ_UNCOMMITED** : Read changes that are uncommitted. Leads to dirty reads, phantom reads and non repeatable reads.
+* **ISOLATION_READ_COMMITED** : Read only commited data. Dirty read is prevented but Non-repeatable read and phantom read are possible.
+* **ISOLATION_REPEATABLE_READ** : Multiple Reads of the same field will yield the same results untill it is changed by itself. Dirty Reads and non repeatable reads are prevented but phantom reads are possible as other transactions may edit the fields.
+* **ISOLATION_SERIALIZABLE** : dirty, phantom and norepeatable reads are prevented but hampers the performance of the application.
+
+**Propagation**
+Propagation configuration tells the transaction manager if a new transaction should be started or can use the transaction which already exists.
+
+**Propagation Attributes**
+* **PROPAGATION_MANDATORY** : Method should run in a transaction and if no transaction exits exception will be thrown.
+* **PROPAGATION_NESTED** : Method should run in a nested transaction.
+* **PROPAGATION_NEVER** : Method should not run in a transaction. If a transaction exists exception will be thrown.
+* **PROPAGATION_NOT_SUPPORTED** : Method should not run in a transaction. If a transaction exists it will be suspended untill the method completes execution.
+* **PROPAGATION_REQUIRED** : Method should run in a transaction. If already exists, method will run in it and if not a new transaction will be created.
+* **PROPAGATION_REQUIRES_NEW** : Method should run in a new transaction. If a transaction already exists, it will be suspende till the method finished.
+* **PROPAGATION_SUPPORTS** : Method need not run in a transaction. But if already exists , it supports the one which is already in progress.
+
+**ReadOnly**
+
+By applying ReadOnly to a transaction, the underlying data store will apply some performance optimizations to render data more faster.
+
+**Timeout**
+
+By declaring the Timeout attribute, we can ensure that long running transactions are rolled back after certain time. It is useful to apply in PROPAGATION_REQUIRED, PROPAGATION_REQUIRES_NEW and PROPAGATION_NESTED
+
+**Rollback**
+
+Rollback tells a transaction manager when to rollback a transaction when an exception occurs. By default the transaction will be rolled back when runtime exception occurs.
+
+
+**Local vs. Global Transactions**
+
+Local transactions are specific to a single transactional resource like a JDBC connection, whereas global transactions can span multiple transactional resources like transaction in a distributed system.
+
+Local transaction management can be useful in a centralized computing environment where application components and resources are located at a single site, and transaction management only involves a local data manager running on a single machine. Local transactions are easier to be implemented.
+
+Global transaction management is required in a distributed computing environment where all the resources are distributed across multiple systems. In such a case, transaction management needs to be done both at local and global levels. A distributed or a global transaction is executed across multiple systems, and its execution requires coordination between the global transaction management system and all the local data managers of all the involved systems.
+
+Transaction Management simply means: How does spring start, commit or rollback JDBC transactions. Whereas with plain JDBC we only have one way (setAutoCommit(false)) to manage transactions, spring offers us many different, more convinient ways to achieve the same.
+
+**Spring Framework Transaction Management**
+
+Spring Support two types of transaction managements. They are: 
+
+**Programmatic Transaction**
+
+Programming tranasctions gives us the precise control on the boundaries of the transaction. This gives us extreme flexibility but is difficult to maintain. Either through a TransactionTemplate or directly through the PlatformTransactionManager.
+
+**Declarative Transaction**
+Declarative transaction offers to separate transaction management from buisiness code. We only use annotations or XML-based configuration to manage the transactions.
+
+Declarative transaction management is preferable over programmatic transaction management though it is less flexible than programmatic transaction management, which allows you to control transactions through your code. But as a kind of crosscutting concern, declarative transaction management can be modularized with the AOP approach. Spring supports declarative transaction management through the Spring AOP framework.
+
+So if the the number of steps in the transaction is smaller then we will use programmatic transaction management otherwise we will use declarative transaction management.
+
+
+
+
+
+
+
 
  
 
