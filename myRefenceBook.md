@@ -26,12 +26,24 @@
 
 ## Architecture of Spring Framework
 
+There are about 20 modules in spring. They canbe grouped into 7 groups. They are : 
+* **Core Containers :**Consists of Core, Beans, Context, Expression modules.
+* **Data Access/ Integration :**Consists of JDBC, ORM, OXM, JMS, Transactions
+* **Web :**Web, servlet, Portlet, Struts
+* **AOP :**Aspect Oriented Programming
+* **Aspects :** Integration with AspectJ
+* **Instrumentation :**Class instrumentation support and classloader implementations in application server
+* **Test :**JUnit, TestNG
+
 
 
 ## Understand about the necessary environment setup to work with Spring
 
+At first we need a JDK, an editor and maven installed in our pc to work with spring.
 
 ## Maven Dependency Management
+
+It is a mechanism for centralizing deoendency information. It is a tag consists of dependencies tag whuch itself can contains multiple dependency tag. Each dependency supposed to have at least 3 main tags: groupId, artifactId and version
 
 
 ## Dependency injection and IOC
@@ -91,6 +103,20 @@ Else Explicitly/manually (CI/SI)
 
 ## Spring annotations 
 
+Traditionally spring allows to manage bean dependencies by using XML-based configuration.
+Unlike the XML approach, Java-based configuration allows you to manage bean components programatically through spring annotations. Annotation injection is performed before XML injection. So annotation configuration is override by xml xml configuration.
+
+Some important spring annotations are:
+
+* **@Configuration:** Used to indicate that a class declares one or more @Bean methods. These classes are processed by the Spring container to generate bean definitions and service requests for those beans at runtime.
+* **@Bean:** Indicates that a method produces a bean to be managed by the Spring container. This is one of the most used and important spring annotation.
+* **@PreDestroy** and **@PostConstruct** are alternative way for bean initMethod and destroyMethod. It can be used when the bean class is defined by us.
+* **@ComponentScan:** Configures component scanning directives for use with **@Configuration** classes. Here we can specify the base packages to scan for spring components.
+* **@Component**: Indicates that an annotated class is a “component”. Such classes are considered as candidates for auto-detection when using annotation-based configuration and classpath scanning.
+* **@PropertySource**: provides a simple declarative mechanism for adding a property source to Spring’s Environment. There is a similar annotation for adding an array of property source files i.e **@PropertySources**.
+* **@Service:** Indicates that an annotated class is a “Service”. This annotation serves as a specialization of **@Component**, allowing for implementation classes to be autodetected through classpath scanning.
+* **@Repository:** Indicates that an annotated class is a “Repository”. This annotation serves as a specialization of @Component and advisable to use with DAO classes.
+* **@Autowired:** Spring @Autowired annotation is used for automatic injection of beans. Spring @Qualifier annotation is used in conjunction with Autowired to avoid confusion when we have two of more bean configured for same type.
 
 ## Bean life cycle
 A Spring bean need to be instantiated when the container starts. Some pre and post initialization steps to get the bean into a usuable state. When the bean is no longer needed, it will be removed from IoC container. Some pre and post destruction steps to free the other system resource.
@@ -290,28 +316,84 @@ Spring Support two types of transaction managements. They are:
 **Programmatic Transaction**
 
 Programming tranasctions gives us the precise control on the boundaries of the transaction. This gives us extreme flexibility but is difficult to maintain. Either through a TransactionTemplate or directly through the PlatformTransactionManager.
+In PlatformTransactionManager Interface all methods throw TransactionException. This Exception itself is UncheckedException means developer is not forced to handle these exceptions.
+
+TransactionStatus interface defines several methods to get the status of transaction and controls the transaction execution as well.
 
 **Declarative Transaction**
 Declarative transaction offers to separate transaction management from buisiness code. We only use annotations or XML-based configuration to manage the transactions.
 
 Declarative transaction management is preferable over programmatic transaction management though it is less flexible than programmatic transaction management, which allows you to control transactions through your code. But as a kind of crosscutting concern, declarative transaction management can be modularized with the AOP approach. Spring supports declarative transaction management through the Spring AOP framework.
 
+Programmatic approach has a tight coupling on the transaction code with  business logic. In Declarative transactions, we can separate transaction management code from business logic.
+
 So if the the number of steps in the transaction is smaller then we will use programmatic transaction management otherwise we will use declarative transaction management.
 
+Spring supports declarative transactions using : 
+
+**Transaction Advices (using Aspect Oriented Programming) **
+
+In this approach we need to-  a)  declare a transaction advice via the element defined in the tx namespace.  For example
+
+	<tx:advice id=”txAdvice” transaction-manager=”transactionManager”>
+	<tx:attributes>
+		<tx:method name=”buy*” propagation=”REQUIRED”/>
+		<tx:method name=”*” propagation=”SUPPORTS” />
+	
+	</tx:attributes>
+	</tx:advice>
+
+Transaction advice defines element which can have several tags to define several properties. In above example, any method whose name starts with “buy”  are required or a part of the transaction, but all other methods will execute in current transaction but will not create a new if the transaction does not exist.
+
+b.  Now we need to associate transaction advice ()  with a pointcut using
+
+	<aop:config>
+	<aop:advisor advice-ref=”txAdvice”
+		pointcut =” execution(* jdbc.BuyProduct.buyProduct(..))”/>
+	</aop:config>
+
+**@Transactional Annotation**
+
+Along with the declarative approach with pointcut , advisors configuration in beans configuration file , Spring allows another way of declarative transaction management using @Transactional annotation  on the method which requires transaction and enabling element in the beans configuration file. 
 
 
+**What is the difference between physical and logical transactions?**
+
+**Physical Transactions:** Are your actual JDBC transactions.
+
+**Logical Transactions:** Are the (potentially nested) @Transactional-annotated (Spring) methods.
 
 
-
-
-
- 
-
- 
 
 
 
 ## i18n
+
+i18n is an acronym for internationalization. Internationalization is the process of desigining a software appication so that it can potentially be adapted to various languages and regions without engineering changes.
+The Spring framework uses LocaleResolver to support the internationalization and localization as well.
+
+An application written in Java, and Spring as well, are capable to support different languages by providing textual messages externally. These messages are usually written in .properties files.
+
+**Naming convention for resource files**
+
+	basename_languageCode_countryCode.properties
+'basename' can be related to the application part where these properties belong to. For example orderView_en_us.properties.
+
+The main Spring interface to support of I18n/L10n messages is MessageSource.
+
+
+**Steps of i18n :**
+
+1. Have each locale specific properties file having texts in that locale specific language. Spring doesn't provide any annotations based approach for message resolutions. The only appropriate way is to inject the implementation of MessageSource as a bean.
+
+2. Then we have to register the beans.
+
+3. make view changes to support displaying locale specific text messages
+
+
+
+
+
 
 ## Data Binding
 
